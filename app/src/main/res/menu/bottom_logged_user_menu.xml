@@ -16,8 +16,14 @@
         android:title="@string/navigation_progress" />
 
     <item
-        android:id="@+id/navigation_statistics"
-        android:icon="@drawable/ic_statistics"
-        android:title="@string/navigation_statistics" />
+        android:id="@+id/navigation_bmi"
+        android:icon="@drawable/ic_bmi"
+    android:title="BMI" />
+    <item
+        android:id="@+id/navigation_diary"
+        android:title="Diary"
+        android:icon="@drawable/ic_diary" />
+
+
 
 </menu>

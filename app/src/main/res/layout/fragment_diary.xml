@@ -1,0 +1,176 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- BMI & Recommended Calories -->
+        <TextView
+            android:id="@+id/textViewBmi"
+            android:text="BMI:"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/night_fields_container" />
+
+        <TextView
+            android:id="@+id/textViewCalories"
+            android:text="Calorii recomandate:"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary" />
+
+        <!-- Calorie Input -->
+        <EditText
+            android:id="@+id/editTextBreakfast"
+            android:hint="Mic dejun (kcal)"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:layout_marginTop="24dp" />
+
+        <EditText
+            android:id="@+id/editTextLunch"
+            android:hint="Prânz (kcal)"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/editTextDinner"
+            android:hint="Cină (kcal)"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/buttonCalculateCalories"
+            android:text="Calculează calorii consumate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <!-- Calorie Results -->
+        <TextView
+            android:id="@+id/textViewTotalCalories"
+            android:text="Total consumat: 0 kcal"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textViewCaloriesBurned"
+            android:text="Calorii arse: 0 kcal"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textViewCaloriesLeft"
+            android:text="Calorii rămase: 0 kcal"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/night_primary_variant"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/editTextNewWeight"
+            android:hint="@string/label_new_weight_hint"
+            android:inputType="numberDecimal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:layout_marginTop="32dp" />
+
+        <Button
+            android:id="@+id/buttonUpdateWeight"
+            android:text="Salvează greutatea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/night_primary_variant"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Water Tracking -->
+        <TextView
+            android:id="@+id/textViewSavedWater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apă consumată azi: 0 ml"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp"
+            android:textColor="?android:attr/textColorPrimary" />
+
+        <EditText
+            android:id="@+id/editTextWaterIntake"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Introdu cantitatea de apă (ml)"
+            android:inputType="number"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/buttonSaveWater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salvează apă" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/night_primary_variant"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/textViewWeightHistoryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Weight history"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewWeightHistory"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:minHeight="200dp" />
+    </LinearLayout>
+</ScrollView>

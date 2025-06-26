@@ -1,5 +1,6 @@
 package com.master.fitnessjourney.tasks
 
+import android.content.Context
 import android.os.AsyncTask
 import com.master.fitnessjourney.ApplicationController
 import com.master.fitnessjourney.entities.DifficultyExercicesEnum
@@ -9,13 +10,14 @@ import com.master.fitnessjourney.entities.TypeExercicesEnum
 import com.master.fitnessjourney.models.ExerciceModel
 
 class InsertExerciceTask(
-    val onSuccess: () -> Unit
-): AsyncTask<ExerciceModel,Unit,Unit>() {
+    private val context: Context,
+    private val onSuccess: () -> Unit
+) : AsyncTask<ExerciceModel, Unit, Unit>() {
+
     @Deprecated("Deprecated in Java")
     override fun doInBackground(vararg params: ExerciceModel) {
-
         params.getOrNull(0)?.let { exercice ->
-            val exerciceType = when (exercice.type.toUpperCase()) {
+            val exerciceType = when (exercice.type.uppercase()) {
                 "CARDIO" -> TypeExercicesEnum.CARDIO
                 "OLYMPIC WEIGHTLIFTING" -> TypeExercicesEnum.OLYMPIC_WEIGHTLIFTING
                 "PLYOMETRICS" -> TypeExercicesEnum.PLYOMETRICS
@@ -25,7 +27,8 @@ class InsertExerciceTask(
                 "STRONGMAN" -> TypeExercicesEnum.STRONGMAN
                 else -> TypeExercicesEnum.CARDIO
             }
-            val exerciceMuscle = when (exercice.muscle.toUpperCase()) {
+
+            val exerciceMuscle = when (exercice.muscle.uppercase()) {
                 "ABDOMINALS" -> MuscleExercicesEnum.ABDOMINALS
                 "ABDUCTORS" -> MuscleExercicesEnum.ABDUCTORS
                 "ADDUCTORS" -> MuscleExercicesEnum.ADDUCTORS
@@ -44,20 +47,28 @@ class InsertExerciceTask(
                 "TRICEPS" -> MuscleExercicesEnum.TRICEPS
                 else -> MuscleExercicesEnum.ABDOMINALS
             }
-            val exerciceDiff = when (exercice.difficulty.toUpperCase()) {
+
+            val exerciceDiff = when (exercice.difficulty.uppercase()) {
                 "BEGINNER" -> DifficultyExercicesEnum.BEGINNER
                 "INTERMEDIATE" -> DifficultyExercicesEnum.INTERMEDIATE
                 "EXPERT" -> DifficultyExercicesEnum.EXPERT
                 else -> DifficultyExercicesEnum.INTERMEDIATE
             }
+
+            val email = context
+                .getSharedPreferences("CONTEXT_DETAILS", Context.MODE_PRIVATE)
+                .getString("email", "") ?: ""
+
             val exc = Exercice(
                 name = exercice.name,
                 type = exerciceType,
                 muscle = exerciceMuscle,
                 equipment = exercice.equipment,
                 difficulty = exerciceDiff,
-                instructions = exercice.instructions
+                instructions = exercice.instructions,
+                userEmail = email
             )
+
             ApplicationController
                 .instance?.appDatabase?.exerciceDao?.insertExercice(exc)
         }
@@ -66,6 +77,6 @@ class InsertExerciceTask(
     @Deprecated("Deprecated in Java")
     override fun onPostExecute(result: Unit) {
         super.onPostExecute(result)
-        onSuccess.invoke()
+        onSuccess()
     }
 }

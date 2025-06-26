@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@drawable/shape_login_container"
     android:layout_marginBottom="10dp">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+    <!-- Exercise Name -->
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
-        tools:text="Exercice Name"
-        android:gravity="center"
+        android:textSize="20sp"
         android:textStyle="bold"
-        />
+        android:gravity="center"
+        tools:text="Exercise Name" />
+
+    <!-- Row 1: Type + Muscle -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:weightSum="2">
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -36,34 +36,47 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Type: "
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Exercice Type"/>
+                tools:text="Exercise Type" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Muscle: "
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
-        android:id="@+id/tv_muscle"
+                android:id="@+id/tv_muscle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Exercise Muscle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Row 2: Difficulty + Equipment -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Exercice Muscle"
-        />
-        </LinearLayout>
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:weightSum="2">
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -71,54 +84,56 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Difficulty: "
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
-        android:id="@+id/tv_difficulty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Exercice Difficulty"
-        />
+                android:id="@+id/tv_difficulty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Difficulty" />
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Equipment: "
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
-        android:id="@+id/tv_equipment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Equipment Name"
-        />
+                android:id="@+id/tv_equipment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Equipment" />
         </LinearLayout>
     </LinearLayout>
 
-        <Button
-            android:id="@+id/button_choose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Choose"
-            app:layout_constraintStart_toStartOf="parent" />
-    </LinearLayout>
+    <!-- Instructions -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Instructions:"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/tv_instructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Seat yourself on an incline bench with a dumbbell in each hand. You should pressed firmly against he back with your feet together. Allow the dumbbells to hang straight down at your side, holding them with a neutral grip. This will be your starting position. Initiate the movement by flexing at the elbow, attempting to keep the upper arm stationary. Continue to the top of the movement and pause, then slowly return to the start position"
-        />
+        tools:text="Seat yourself on an incline bench with a dumbbell in each hand..." />
 
-
+    <!-- Choose Button -->
+    <Button
+        android:id="@+id/button_choose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

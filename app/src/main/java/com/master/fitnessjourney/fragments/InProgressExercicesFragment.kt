@@ -18,6 +18,8 @@ import com.master.fitnessjourney.adapters.ExerciceProgressAdaptor
 import com.master.fitnessjourney.helpers.Theme
 import com.master.fitnessjourney.models.ExerciceInProgress
 import com.master.fitnessjourney.repository.ExcProgressRepository
+import androidx.navigation.fragment.findNavController
+
 import java.util.prefs.Preferences
 
 class InProgressExercicesFragment : Fragment() {
@@ -43,6 +45,17 @@ class InProgressExercicesFragment : Fragment() {
         setupRecyclerView()
         if(username!=null)
             {showData(username)}
+
+        val statisticsBtn = view.findViewById<Button>(R.id.btn_statistics)
+        statisticsBtn.setOnClickListener {
+            requireActivity()
+                .supportFragmentManager
+                .beginTransaction()
+                .addToBackStack(null)
+                .commit()
+            findNavController().navigate(R.id.navigation_statistics)
+        }
+
     }
     private fun showData(username: String) {
         ExcProgressRepository.getExcProgress(username) { exercices ->

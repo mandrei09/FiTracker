@@ -86,14 +86,14 @@ object ExcProgressRepository {
             callback(exerc)
         }.execute()
     }
-    fun getCountExcProgressGroupType(callback: (List<CountTypeExcModel>) -> Unit){
-        GetCountProgressExcGroupTypeTask{exCount ->
+    fun getCountExcProgressGroupType(username: String, callback: (List<CountTypeExcModel>) -> Unit){
+        GetCountProgressExcGroupTypeTask(username){exCount ->
             callback(exCount)
         }.execute()
     }
 
-    fun getCountExcProgressGroupDiff(callback: (List<CountDiffExcModel>) -> Unit){
-        GetCountProgressExcGroupDiffTask{exCount ->
+    fun getCountExcProgressGroupDiff(username: String, callback: (List<CountDiffExcModel>) -> Unit){
+        GetCountProgressExcGroupDiffTask(username){exCount ->
             callback(exCount)
         }.execute()
     }

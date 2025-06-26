@@ -1,12 +1,29 @@
 package com.master.fitnessjourney.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.master.fitnessjourney.entities.DifficultyExercicesEnum
+import com.master.fitnessjourney.entities.MuscleExercicesEnum
+import com.master.fitnessjourney.entities.TypeExercicesEnum
 
-@Entity(tableName = "exercices")
+@Entity(
+    tableName = "exercices",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["email"],
+            childColumns = ["userEmail"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("userEmail")]
+)
 data class Exercice(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
+    val userEmail: String,
     val name: String,
     val type: TypeExercicesEnum,
     val muscle: MuscleExercicesEnum,
@@ -14,8 +31,3 @@ data class Exercice(
     val difficulty: DifficultyExercicesEnum,
     val instructions: String
 )
-{
-    constructor(name: String,type: TypeExercicesEnum,muscle: MuscleExercicesEnum,
-        equipment: String,difficulty: DifficultyExercicesEnum,instructions: String)
-    :this(0,name, type, muscle, equipment, difficulty, instructions)
-}

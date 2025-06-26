@@ -115,12 +115,13 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_filter"
-            android:layout_width="wrap_content"
+            android:layout_width="181dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Search"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/button_background_drawable_selector"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="Search" />
 
     </LinearLayout>
 

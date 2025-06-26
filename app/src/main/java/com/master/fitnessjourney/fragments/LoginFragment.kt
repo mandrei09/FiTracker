@@ -3,25 +3,26 @@ package com.master.fitnessjourney.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputLayout
-import com.master.fitnessjourney.BuildConfig
 import com.master.fitnessjourney.R
 import com.master.fitnessjourney.helpers.LogInOutEvent
+import com.master.fitnessjourney.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
 class LoginFragment : Fragment() {
 
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,8 +30,8 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         sharedPreferences =
-            (activity?.getSharedPreferences("CONTEXT_DETAILS", Context.MODE_PRIVATE))!!
-        return inflater.inflate(R.layout.fragment_login, container, false )
+            requireActivity().getSharedPreferences("CONTEXT_DETAILS", Context.MODE_PRIVATE)
+        return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,58 +44,33 @@ class LoginFragment : Fragment() {
     }
 
     private fun doLogin() {
-        val editUsername = view?.findViewById<TextInputLayout>(R.id.et_username) ?: return
-        val editPassword = view?.findViewById<TextInputLayout>(R.id.et_password) ?: return
+        val usernameInput = view?.findViewById<TextInputLayout>(R.id.et_username)
+        val passwordInput = view?.findViewById<TextInputLayout>(R.id.et_password)
 
-        val username: String
-        val password: String
+        val username = usernameInput?.editText?.text.toString().trim()
+        val password = passwordInput?.editText?.text.toString()
 
-        when (BuildConfig.DEBUG) {
-            true -> {
-                username = "mor_2314"
-                password = "83r5^_"
-            }
-            false -> {
-                username = editUsername.toString().trim()
-                password = editPassword.toString().trim()
-            }
+        if (username.isEmpty() || password.isEmpty()) {
+            Toast.makeText(requireContext(), "Completează toate câmpurile", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        val url = "${BuildConfig.BASE_URL}auth/login"
+        lifecycleScope.launch(Dispatchers.IO) {
+            val user = UserRepository.login(username, password)
 
-        val stringRequest = object : StringRequest(
-            Method.POST,
-            url,
-            { response ->
-                Log.e("success", this.toString())
+            withContext(Dispatchers.Main) {
+                if (user != null) {
+                    sharedPreferences.edit().putString("email", user.email).apply()
 
-                Toast.makeText(activity,  "Signed in with success", Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Autentificare reușită!", Toast.LENGTH_SHORT).show()
 
-                sharedPreferences.edit().putString("email", username).apply()
-                sharedPreferences.edit().putString("token", response).apply()
-
-                EventBus.getDefault().post(LogInOutEvent(isLoggedIn = true))
-
-                goToHome()
-            },
-            { error->
-                Log.e("That didn't work!", this.toString())
-                Log.e(error.toString(), this.toString())
-
-                Toast.makeText(activity, "That didn't work!", Toast.LENGTH_LONG).show();
-                Toast.makeText(activity, "Error: " + error.message, Toast.LENGTH_LONG).show();
-            }
-        ) {
-            override fun getParams(): MutableMap<String, String> {
-                val params: MutableMap<String, String> = HashMap()
-                params["username"] = username
-                params["password"] = password
-                return params
+                    EventBus.getDefault().post(LogInOutEvent(isLoggedIn = true))
+                    goToHome()
+                } else {
+                    Toast.makeText(requireContext(), "Utilizator sau parolă incorectă", Toast.LENGTH_SHORT).show()
+                }
             }
         }
-
-        stringRequest.tag = "SRTAG"
-        Volley.newRequestQueue(requireContext()).add(stringRequest)
     }
 
     private fun goToHome() {

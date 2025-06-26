@@ -44,4 +44,15 @@
         android:name="com.master.fitnessjourney.fragments.StatisticsFragment"
         android:label="@string/navigation_statistics"
         tools:layout="@layout/fragment_statistics" />
+    <fragment
+        android:id="@+id/navigation_bmi"
+        android:name="com.master.fitnessjourney.fragments.BmiFragment"
+        android:label="BMI"
+        tools:layout="@layout/fragment_bmi" />
+    <fragment
+        android:id="@+id/navigation_diary"
+        android:name="com.master.fitnessjourney.fragments.DiaryFragment"
+        android:label="Diario"
+        tools:layout="@layout/fragment_diary" />
+
 </navigation>

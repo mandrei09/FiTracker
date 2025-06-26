@@ -21,4 +21,9 @@
     <string name="register_hint_password">Password</string>
     <string name="register_hint_username">Username</string>
     <string name="register_hint_email">Email</string>
+    <string name="label_new_weight_hint">Introdu greutatea nouă (kg)</string>
+    <string name="button_save_weight">Salvează greutatea</string>
+    <string name="label_bmi">BMI:</string>
+    <string name="label_calories">Calorii recomandate:</string>
+
 </resources>

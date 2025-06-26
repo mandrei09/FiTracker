@@ -110,8 +110,10 @@ class FindExercicesFragment : Fragment() {
                     responseJsonArray.forEach{
                     val model = ExerciceModel(name = it.name, equipment = it.equipment, instructions = it.instructions,type=it.type, difficulty = it.difficulty, muscle = it.muscle)
                     this.items.add(model)
-                        ExercicesRepository.getExcByProperties(model){}
-                }}
+                        ExercicesRepository.getExcByProperties(requireContext(), model) {}
+
+
+                    }}
                 adapter.notifyDataSetChanged()
                 if(items.isEmpty()){
                     Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show()

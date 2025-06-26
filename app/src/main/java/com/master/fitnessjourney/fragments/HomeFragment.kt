@@ -1,14 +1,12 @@
 package com.master.fitnessjourney.fragments
 
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LegendEntry
@@ -20,24 +18,16 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.master.fitnessjourney.R
-import com.master.fitnessjourney.entities.DifficultyExercicesEnum
-import com.master.fitnessjourney.entities.Exercice
-import com.master.fitnessjourney.entities.MuscleExercicesEnum
-import com.master.fitnessjourney.entities.TypeExercicesEnum
 import com.master.fitnessjourney.helpers.Theme
-import com.master.fitnessjourney.helpers.extensions.logErrorMessage
 import com.master.fitnessjourney.models.CountDiffExcModel
 import com.master.fitnessjourney.models.CountTypeExcModel
-import com.master.fitnessjourney.models.ExerciceModel
 import com.master.fitnessjourney.repository.ExcProgressRepository
-import com.master.fitnessjourney.repository.ExercicesRepository
-import org.jetbrains.annotations.Async.Execute
 
 class HomeFragment : Fragment() {
 
     private lateinit var themePreferences: Theme
     lateinit var themeSwitch: SwitchMaterial
-    private lateinit var chart: BarChart
+    private lateinit var chart: HorizontalBarChart
     private lateinit var chartData: BarData
     private lateinit var dataSet: BarDataSet
     private lateinit var entryList: ArrayList<BarEntry>
@@ -57,14 +47,19 @@ class HomeFragment : Fragment() {
     var interExcNr = 0
     var expertExcNr = 0
 
-
     private val items = ArrayList<CountTypeExcModel>()
     private val itemsDiff = ArrayList<CountDiffExcModel>()
+    private val currentUsername: String?
+        get() = activity?.getSharedPreferences(
+            "CONTEXT_DETAILS",
+            android.content.Context.MODE_PRIVATE
+        )?.getString("email", null)
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -76,122 +71,160 @@ class HomeFragment : Fragment() {
         chartPie = view.findViewById(R.id.pie_chart_exc_diff)
         chartPie.visibility = View.GONE
 
-        themeSwitch = view.findViewById<SwitchMaterial>(R.id.themeSwitch)
+        themeSwitch = view.findViewById(R.id.themeSwitch)
         themePreferences = Theme(requireContext())
         themeSwitch.isChecked = themePreferences.isDarkTheme()
         loadSwitchTheme()
+
         themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             handleThemeSwitch(isChecked)
         }
-        showExercisesTypeDistribution()
-        showExercicesDiffDistribution()
+
+        if (currentUsername != null) {
+            showExercisesTypeDistribution(currentUsername!!)
+            showExercicesDiffDistribution(currentUsername!!)
+        }
     }
-    private fun showExercicesDiffDistribution() {
-        ExcProgressRepository.getCountExcProgressGroupDiff() { exercices ->
+
+    private fun showExercicesDiffDistribution(username: String) {
+        ExcProgressRepository.getCountExcProgressGroupDiff(username) { exercices ->
+            beginnerExcNr = 0
+            interExcNr = 0
+            expertExcNr = 0
             itemsDiff.clear()
             itemsDiff.addAll(exercices)
             for (ex in exercices) {
                 when (ex.difficulty.toString()) {
                     "BEGINNER" -> beginnerExcNr += ex.countExcProgress
                     "INTERMEDIATE" -> interExcNr += ex.countExcProgress
-                     else -> expertExcNr+= ex.countExcProgress
+                    else -> expertExcNr += ex.countExcProgress
                 }
             }
             chartPieDataUpload()
         }
     }
 
-    private fun showExercisesTypeDistribution() {
-        ExcProgressRepository.getCountExcProgressGroupType() { exercices ->
+    private fun showExercisesTypeDistribution(username: String) {
+        ExcProgressRepository.getCountExcProgressGroupType(username) { exercices ->
+            cardioExcDoneNumber = 0
+            olympicWeightExcDoneNumber = 0
+            plyometricsExcDoneNumber = 0
+            powerliftExcDoneNumber = 0
+            strengthExcDoneNumber = 0
+            stretchExcDoneNumber = 0
+            strongmanExcDoneNumber = 0
+
             items.clear()
             items.addAll(exercices)
             for (ex in exercices) {
                 when (ex.typeExc.toString()) {
                     "CARDIO" -> cardioExcDoneNumber += ex.countExcProgress
                     "OLYMPIC_WEIGHTLIFTING" -> olympicWeightExcDoneNumber += ex.countExcProgress
-                    "PLYOMETRICS" -> plyometricsExcDoneNumber+= ex.countExcProgress
-                    "POWERLIFTING" -> powerliftExcDoneNumber+= ex.countExcProgress
-                    "STRENGTH" -> strengthExcDoneNumber+= ex.countExcProgress
-                    "STRETCHING" -> stretchExcDoneNumber+= ex.countExcProgress
-                    else -> strongmanExcDoneNumber+= ex.countExcProgress
+                    "PLYOMETRICS" -> plyometricsExcDoneNumber += ex.countExcProgress
+                    "POWERLIFTING" -> powerliftExcDoneNumber += ex.countExcProgress
+                    "STRENGTH" -> strengthExcDoneNumber += ex.countExcProgress
+                    "STRETCHING" -> stretchExcDoneNumber += ex.countExcProgress
+                    else -> strongmanExcDoneNumber += ex.countExcProgress
                 }
             }
             chartDataUpload()
         }
     }
-    private fun chartPieDataUpload() {
-        getPieChart()
-        chartPie.visibility = View.VISIBLE //show when data is ready
-    }
+
+
     private fun chartDataUpload() {
+        if (!isAdded || context == null) return
         getBarsChart()
-        chart.visibility = View.VISIBLE //show when data is ready
+        chart.visibility = View.VISIBLE
     }
 
-    fun getBarsChart(){
+    private fun chartPieDataUpload() {
+        if (!isAdded || context == null) return
+        getPieChart()
+        chartPie.visibility = View.VISIBLE
+    }
+
+    fun getBarsChart() {
+        if (!isAdded || context == null) return
         entryList = ArrayList()
-        entryList.add(BarEntry(1f,cardioExcDoneNumber.toFloat()))
-        entryList.add(BarEntry(2f,olympicWeightExcDoneNumber.toFloat()))
-        entryList.add(BarEntry(3f,plyometricsExcDoneNumber.toFloat()))
-        entryList.add(BarEntry(4f,powerliftExcDoneNumber.toFloat()))
-        entryList.add(BarEntry(5f,strengthExcDoneNumber.toFloat()))
-        entryList.add(BarEntry(6f,stretchExcDoneNumber.toFloat()))
-        entryList.add(BarEntry(7f,strongmanExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(1f, cardioExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(2f, olympicWeightExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(3f, plyometricsExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(4f, powerliftExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(5f, strengthExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(6f, stretchExcDoneNumber.toFloat()))
+        entryList.add(BarEntry(7f, strongmanExcDoneNumber.toFloat()))
 
         dataSet = BarDataSet(entryList, "type count")
         chartData = BarData(dataSet)
         chart.data = chartData
-        val colors = listOf(
-            resources.getColor(R.color.teal_700), // Color for cardio
-            resources.getColor(R.color.purple_200), // Color for olympic
-            resources.getColor(R.color.light_primary), // Color for plyometric
-            resources.getColor(R.color.teal_200), // Color for powerlift
-            resources.getColor(R.color.purple_500), // Color for strength
-            resources.getColor(R.color.night_primary), // Color for stretch
-            resources.getColor(R.color.night_fields_container), // Color for strongman
-        )
 
+        val colors = listOf(
+            requireContext().getColor(R.color.color1),
+            requireContext().getColor(R.color.color2),
+            requireContext().getColor(R.color.color3),
+            requireContext().getColor(R.color.color4),
+            requireContext().getColor(R.color.color5),
+            requireContext().getColor(R.color.color6),
+            requireContext().getColor(R.color.color7),
+        )
         dataSet.colors = colors
         dataSet.valueTextColor = Color.GRAY
         dataSet.valueTextSize = 13f
         chart.description.isEnabled = false
 
-        val legendEntries = mutableListOf<LegendEntry>(
-            LegendEntry("Cardio", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.teal_700)),
-            LegendEntry("Weighlift", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.purple_200)),
-            LegendEntry("Plyometrics", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.light_primary)),
-            LegendEntry("Powerlift", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.teal_200)),
-            LegendEntry("Strength", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.purple_500)),
-            LegendEntry("Stretch", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.night_primary)),
-            LegendEntry("Strongman", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.night_fields_container))
+        val legendEntries = listOf(
+            LegendEntry("Cardio", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[0]),
+            LegendEntry("Weighlift", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[1]),
+            LegendEntry("Plyometrics", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[2]),
+            LegendEntry("Powerlift", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[3]),
+            LegendEntry("Strength", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[4]),
+            LegendEntry("Stretch", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[5]),
+            LegendEntry("Strongman", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[6])
         )
 
-        val legend = chart.legend
-        legend.textColor = Color.GRAY
-        legend.isEnabled = true
-        legend.textSize = 13.0F
-        legend.setCustom(legendEntries)
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        legend.orientation = Legend.LegendOrientation.VERTICAL
-        legend.setDrawInside(false)
-
-        chart.invalidate() // Refresh the chart
+        chart.legend.apply {
+            isWordWrapEnabled = true
+            form = Legend.LegendForm.SQUARE
+            textColor = Color.GRAY
+            isEnabled = true
+            textSize = 13.0F
+            setCustom(legendEntries)
+            verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            orientation = Legend.LegendOrientation.HORIZONTAL
+            chart.axisLeft.isEnabled = false
+            chart.axisRight.isEnabled = true
+            chart.xAxis.apply {
+                position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+                setDrawGridLines(false)
+            }
+            setDrawInside(false)
+            xEntrySpace = 10f  // space between items
+            yEntrySpace = 5f
+        }
+        chart.extraBottomOffset = 24f
+        chart.invalidate()
     }
-    fun getPieChart(){
+
+    fun getPieChart() {
+        if (!isAdded || context == null) return
         entryListPie = ArrayList()
         val sum = beginnerExcNr + interExcNr + expertExcNr
-        entryListPie.add(PieEntry(beginnerExcNr.toFloat()/sum *100))
-        entryListPie.add(PieEntry(interExcNr.toFloat()/sum *100))
-        entryListPie.add(PieEntry(expertExcNr.toFloat()/sum *100))
+        if (sum == 0) return
+
+        entryListPie.add(PieEntry(beginnerExcNr.toFloat() / sum * 100))
+        entryListPie.add(PieEntry(interExcNr.toFloat() / sum * 100))
+        entryListPie.add(PieEntry(expertExcNr.toFloat() / sum * 100))
 
         dataSetPie = PieDataSet(entryListPie, "type count")
         chartDataPie = PieData(dataSetPie)
         chartPie.data = chartDataPie
+
         val colors = listOf(
-            resources.getColor(R.color.teal_700), // Color for cardio
-            resources.getColor(R.color.purple_200), // Color for olympic
-            resources.getColor(R.color.light_primary), // Color for plyometric
+            requireContext().getColor(R.color.color5),
+            requireContext().getColor(R.color.color6),
+            requireContext().getColor(R.color.color1),
         )
 
         dataSetPie.colors = colors
@@ -199,23 +232,25 @@ class HomeFragment : Fragment() {
         dataSetPie.valueTextSize = 13f
         chartPie.description.isEnabled = false
 
-        val legendEntries = mutableListOf<LegendEntry>(
-            LegendEntry("Beginner", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.teal_700)),
-            LegendEntry("Intermediate", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.purple_200)),
-            LegendEntry("Expert", Legend.LegendForm.SQUARE, 10f, 2f, null, resources.getColor(R.color.light_primary)),
+        val legendEntries = listOf(
+            LegendEntry("Beginner", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[0]),
+            LegendEntry("Intermediate", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[1]),
+            LegendEntry("Expert", Legend.LegendForm.SQUARE, 10f, 2f, null, colors[2])
         )
 
-        val legend = chartPie.legend
-        legend.textColor = Color.GRAY
-        legend.isEnabled = true
-        legend.textSize = 13.0F
-        legend.setCustom(legendEntries)
+        chartPie.legend.apply {
+            textColor = Color.GRAY
+            isEnabled = true
+            textSize = 13.0F
+            setCustom(legendEntries)
+            verticalAlignment = Legend.LegendVerticalAlignment.TOP
+            horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+            orientation = Legend.LegendOrientation.VERTICAL
+        }
 
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        legend.orientation = Legend.LegendOrientation.VERTICAL
-        chartPie.invalidate() // Refresh the chart
+        chartPie.invalidate()
     }
+
     private fun handleThemeSwitch(isChecked: Boolean) {
         themePreferences.saveTheme(isChecked)
         loadSwitchTheme()
@@ -224,5 +259,4 @@ class HomeFragment : Fragment() {
     private fun loadSwitchTheme() {
         themePreferences.loadTheme()
     }
-
 }

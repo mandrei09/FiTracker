@@ -56,11 +56,16 @@ interface ExerciceProgressDao {
 
     @Query("select count(*) 'countExcProgress',type 'typeExc' " +
             "from exercices_progesses join exercices on (exercices_progesses.exerciceId = exercices.id) " +
-            "group  by type")
-    fun getCountProgressExcGroupType(): List<CountTypeExcModel>
+            "join progresses on (exercices_progesses.progressId = progresses.id) " +
+            "where progresses.username = :username " +
+            "group by type")
+    fun getCountProgressExcGroupTypeByUser(username: String): List<CountTypeExcModel>
 
     @Query("select count(*) 'countExcProgress',difficulty " +
             "from exercices_progesses join exercices on (exercices_progesses.exerciceId = exercices.id) " +
-            "group  by difficulty")
-    fun getCountProgressExcGroupDiff(): List<CountDiffExcModel>
+            "join progresses on (exercices_progesses.progressId = progresses.id) " +
+            "where progresses.username = :username " +
+            "group by difficulty")
+    fun getCountProgressExcGroupDiffByUser(username: String): List<CountDiffExcModel>
+
 }
