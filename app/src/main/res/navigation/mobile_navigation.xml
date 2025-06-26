@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.master.fitnessjourney.fragments.HomeFragment"
+        android:label="@string/navigation_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.master.fitnessjourney.fragments.LoginFragment"
+        android:label="@string/navigation_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_register"
+        android:name="com.master.fitnessjourney.fragments.RegisterFragment"
+        android:label="@string/navigation_register"
+        tools:layout="@layout/fragment_register" />
+
+    <fragment
+        android:id="@+id/navigation_find_exercices"
+        android:name="com.master.fitnessjourney.fragments.FindExercicesFragment"
+        android:label="@string/navigation_find_exercises"
+        tools:layout="@layout/fragment_find_exercices" />
+
+    <fragment
+        android:id="@+id/navigation_in_progress_exercices"
+        android:name="com.master.fitnessjourney.fragments.InProgressExercicesFragment"
+        android:label="@string/navigation_progress"
+        tools:layout="@layout/fragment_in_progress_exercices" />
+
+    <fragment
+        android:id="@+id/navigation_statistics"
+        android:name="com.master.fitnessjourney.fragments.StatisticsFragment"
+        android:label="@string/navigation_statistics"
+        tools:layout="@layout/fragment_statistics" />
+</navigation>

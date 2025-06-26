@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal">
+
+        <!-- Left Icon -->
+        <ImageView
+            android:id="@+id/leftIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_bulb_light"
+            android:padding="8dp"/>
+
+        <!-- Switch -->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/themeSwitch"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+           />
+
+        <!-- Right Icon -->
+        <ImageView
+            android:id="@+id/rightIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_bulb_night"
+            android:padding="8dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_exc_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number of completed exercices by type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        android:layout_marginTop="16dp"
+        android:textSize="16dp"
+        android:textStyle="bold"/>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/bar_chart_exc_type"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/txt_exc_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:id="@+id/txt_exc_diff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Procent of completed exercices by difficulty"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bar_chart_exc_type"
+        android:layout_marginTop="16dp"
+        android:textSize="16dp"
+        android:textStyle="bold"/>
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart_exc_diff"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/txt_exc_diff"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!--    <TextView-->
+<!--        android:id="@+id/text_home"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_marginBottom="348dp"-->
+<!--        android:text="Home fragment"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+</androidx.constraintlayout.widget.ConstraintLayout>

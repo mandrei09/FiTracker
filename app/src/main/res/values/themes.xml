@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.FitnessJourney" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#DAA04A</item>
+        <item name="colorPrimaryVariant">@color/light_primary_variant</item>
+
+        <item name="colorPrimaryContainer">@color/light_fields_container</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/light_fields_container</item>
+        <item name="colorSecondaryVariant">#656765</item>
+        <item name="colorOnSecondary">@color/helper_text_color</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="actionOverflowButtonStyle">@style/Threedotcolor</item>
+        <item name="colorTertiary">@color/black</item>
+    </style>
+
+    <style name="Threedotcolor" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="tint">@color/white</item>
+    </style>
+</resources>
