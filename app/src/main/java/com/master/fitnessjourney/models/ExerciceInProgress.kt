@@ -5,5 +5,6 @@ data class ExerciceInProgress(
     val progressId: Int,
     val name: String,
     val instructions: String,
-    val equipment: String
+    val equipment: String,
+    val videoUrl: String
 )

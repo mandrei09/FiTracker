@@ -29,5 +29,6 @@ data class Exercice(
     val muscle: MuscleExercicesEnum,
     val equipment: String,
     val difficulty: DifficultyExercicesEnum,
-    val instructions: String
+    val instructions: String,
+    val videoUrl: String
 )

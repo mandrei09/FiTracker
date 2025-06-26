@@ -1,81 +1,83 @@
 package com.master.fitnessjourney.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.MediaController
 import android.widget.Toast
+import android.widget.VideoView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.master.fitnessjourney.R
-import com.master.fitnessjourney.adapters.ExerciceListAdaptor
 import com.master.fitnessjourney.adapters.ExerciceProgressAdaptor
-import com.master.fitnessjourney.helpers.Theme
 import com.master.fitnessjourney.models.ExerciceInProgress
 import com.master.fitnessjourney.repository.ExcProgressRepository
-import androidx.navigation.fragment.findNavController
-
-import java.util.prefs.Preferences
 
 class InProgressExercicesFragment : Fragment() {
     private val items = ArrayList<ExerciceInProgress>()
-    private val adapter = ExerciceProgressAdaptor(items,
-        {exc -> deleteItem(exc)},
-        {exc -> updateItem(exc)})
+    private lateinit var adapter: ExerciceProgressAdaptor
     private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        sharedPreferences =
-            (activity?.getSharedPreferences("CONTEXT_DETAILS",Context.MODE_PRIVATE))!!
+        sharedPreferences = requireActivity()
+            .getSharedPreferences("CONTEXT_DETAILS", Context.MODE_PRIVATE)
         return inflater.inflate(R.layout.fragment_in_progress_exercices, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val username = sharedPreferences.getString("email",null)
+
+        adapter = ExerciceProgressAdaptor(
+            items,
+            { exc -> deleteItem(exc) },
+            { exc -> updateItem(exc) },
+            { videoUrl -> showVideoPopup(videoUrl) } 
+        )
 
         setupRecyclerView()
-        if(username!=null)
-            {showData(username)}
+        sharedPreferences.getString("email", null)?.let {
+            showData(it)
+        }
 
         val statisticsBtn = view.findViewById<Button>(R.id.btn_statistics)
         statisticsBtn.setOnClickListener {
-            requireActivity()
-                .supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .commit()
             findNavController().navigate(R.id.navigation_statistics)
         }
+    }
 
-    }
-    private fun showData(username: String) {
-        ExcProgressRepository.getExcProgress(username) { exercices ->
-            items.clear()
-            items.addAll(exercices)
-            adapter.notifyDataSetChanged()
-            if(items.isEmpty()){
-                Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(context)
-        val rvExercicesProgress = view?.findViewById<RecyclerView>(R.id.rv_exercices_progress) ?: return
+        val rvExercicesProgress =
+            view?.findViewById<RecyclerView>(R.id.rv_exercices_progress) ?: return
 
         rvExercicesProgress.apply {
             this.layoutManager = layoutManager
             this.adapter = this@InProgressExercicesFragment.adapter
         }
     }
+
+    private fun showData(username: String) {
+        ExcProgressRepository.getExcProgress(username) { exercices ->
+            items.clear()
+            items.addAll(exercices)
+            adapter.notifyDataSetChanged()
+            if (items.isEmpty()) {
+                Toast.makeText(requireContext(), "No data found", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun deleteItem(exercice: ExerciceInProgress) {
         ExcProgressRepository.deleteExerciceInProgress(exercice) {
             adapter.removeItem(exercice)
@@ -87,6 +89,32 @@ class InProgressExercicesFragment : Fragment() {
         ExcProgressRepository.updateExerciceInProgress(exercice) {
             adapter.updateItem(exercice)
         }
-        sharedPreferences.getString("email",null)?.let { showData(it) }
+        sharedPreferences.getString("email", null)?.let { showData(it) }
     }
+
+    private fun showVideoPopup(videoName: String) {
+        if (videoName.isBlank()) {
+            Toast.makeText(requireContext(), "No video available for this exercise.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_video_player, null)
+        val videoView = dialogView.findViewById<VideoView>(R.id.video_view)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(true)
+            .create()
+
+        val mediaController = MediaController(requireContext())
+        mediaController.setAnchorView(videoView)
+        videoView.setMediaController(mediaController)
+
+        val videoUri = Uri.parse("android.resource://${requireContext().packageName}/raw/$videoName")
+        videoView.setVideoURI(videoUri)
+
+        videoView.setOnPreparedListener { videoView.start() }
+        dialog.show()
+    }
+
 }

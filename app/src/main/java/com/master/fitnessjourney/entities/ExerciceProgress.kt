@@ -6,4 +6,4 @@ data class ExerciceProgress(
     val progressId: Int,
     val exerciceId: Int,
     val status: Boolean = false
-) 
+)

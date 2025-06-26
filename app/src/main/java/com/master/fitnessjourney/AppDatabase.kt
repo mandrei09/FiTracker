@@ -22,7 +22,7 @@ import com.master.fitnessjourney.entities.BmiEntry
         Progress::class,
         BmiEntry::class
     ],
-    version = 14
+    version = 15
 )
 @TypeConverters(RoomConvertors::class)
 abstract class AppDatabase: RoomDatabase() {
